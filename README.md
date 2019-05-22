@@ -63,3 +63,10 @@ I use this for my own purposes, and make no claims that it will a) do what *you*
 I can take no responsibility for anything that you do with this, or any damage that it does to your files, computer, you, your pets or anything like that.
 
 Basically, you're on your own...
+
+## Changelog
+
+##### v1.1 - 2019-05-22
+* Tweaked the order that the build_config.php variables are defined in just to make it more logical
+* Fixed some problems with the builder itself that meant you needed to define a [full_name] column in the data.txt file rather than it just working it out
+

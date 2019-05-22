@@ -4,29 +4,12 @@
 	 */
 
 	/**
-	 * Enable quiet mode, which will just silently produce all the signatures and not warn of errors etc.
-	 */
-	$quietMode = false;
-
-	/**
-	 * General path setup - you should never really need to change these
-	 */
-	$baseFolder = dirname(__FILE__) . "/files/";
-	$templateFolder = $baseFolder . "templates/";
-	$outputFolder = $baseFolder . "output/";
-
-	/**
 	 * An array of the templates in the Templates folder
 	 * This should be the "basename" of the .htm file, which should match the folder name before the "_files" part
 	 */
 	$templateList = array(
 		'Example - [[NAME]]',
 	);
-
-	/**
-	 * The filename of the file containing the names etc. for the signatures to be built from
-	 */
-	$dataFile = $baseFolder . "data.txt";
 
 	/**
 	 * Columns in the names file, and their associated placeholder tag (without the surrounding [[ ]])
@@ -46,9 +29,9 @@
 	);
 
 	/**
-	 * Should we ignore the first row because it has headers in? Most of the time you'll leave this true
+	 * The filename of the data to use for the builder, relative to the $baseFolder defined further down
 	 */
-	$dataHasHeaderRow = true;
+	$dataFile = "data.txt";
 
 	/**
 	 * For email signatures where the images are pulled from the web rather than embedded, use this as a base URL
@@ -66,3 +49,27 @@
 	$imageUrls = array(
 		'image001.png'	=> 'logo.png',
 	);
+
+	/***** MOST OF THE TIME YOU WON'T NEED TO CHANGE ANYTHING BELOW THIS LINE *****/
+
+	/**
+	 * Enable quiet mode, which will just silently produce all the signatures and not warn of errors etc.
+	 */
+	$quietMode = false;
+
+	/**
+	 * General path setup - you should never really need to change these
+	 */
+	$baseFolder = dirname(__FILE__) . "/files/";
+	$templateFolder = $baseFolder . "templates/";
+	$outputFolder = $baseFolder . "output/";
+
+	/**
+	 * The filename of the file containing the names etc. for the signatures to be built from
+	 */
+	$dataFile = $baseFolder . $dataFile;
+
+	/**
+	 * Should we ignore the first row because it has headers in? Most of the time you'll leave this true
+	 */
+	$dataHasHeaderRow = true;

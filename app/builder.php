@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * E-signature builder
-	 * v1.0
+	 * v1.1
 	 * (C)2018 Gareth 'GazChap' Griffiths
 	 */
 
@@ -10,13 +10,13 @@
 	$dataColumnsKeys = array_keys( $dataColumns );
 	$dataColumnsValues = array_values( $dataColumns );
 
- 	if ( $signaturefile = fopen( $dataFile, "rb")) {
+	if ( $signaturefile = fopen( $dataFile, "rb")) {
 
 		if ( !is_dir( $outputFolder ) ) {
 			mkdir( $outputFolder ) ;
 		}
 
- 		$counter = 0;
+		$counter = 0;
 		while ( $data = @fgetcsv( $signaturefile, 1024, "\t" ) ) {
 			if ( !$dataHasHeaderRow || $counter ) {
 				$data = array_map( 'trim', $data );
@@ -25,14 +25,22 @@
 					$embedImages = true; // using the embedded image names from Outlook is the default behaviour
 
 					$person = array();
-					foreach( $data as $i => $v ) {
-						$key = $dataColumnsKeys[ $i ];
+					$outputName = "";
+					foreach( $dataColumnsKeys as $i => $key ) {
+						if ( isset( $data[$i] ) ) {
+							$v = $data[$i];
+						} else {
+							$v = "";
+						}
+
 						switch( $key ) {
 							case "[full_name]":
 								if ( isset( $dataColumns['forenames'] ) && isset( $dataColumns['surname'] ) ) {
 									$forenames = $data[ array_search( 'forenames', $dataColumnsKeys ) ];
 									$surname = $data[ array_search( 'surname', $dataColumnsKeys ) ];
 									$person[ $key ] = trim( $forenames . " " . $surname );
+
+									$outputName = $person[ $key ];
 								}
 								break;
 
@@ -49,11 +57,20 @@
 						}
 					}
 
-					if ( !$quietMode ) echo $person[ $dataColumnsKeys[0] ] . ": ";
+					if ( !$outputName ) {
+						if ( !empty( $person[ 'forenames' ] ) ) {
+							$outputName = $person['forenames'];
+						} else {
+							$outputName = $person[ $dataColumnKeys[0] ];
+						}
+					}
+
+					if ( !$quietMode ) echo $outputName . ": ";
 
 					foreach( $templateList as $templateName ) {
+						echo $templateName; print_r($person);
 						$outputTemplateName = replace_placeholders( $templateName, $person );
-
+						echo $outputTemplateName;
 						$files_src_dir = $templateFolder . $templateName . "_files";
 						$files_dest_dir = replace_placeholders( $outputFolder . $outputTemplateName . "_files", $person );
 

@@ -43,6 +43,7 @@ Key | Purpose
 --- | -------
 `web_images` | With this column, if any rows have this column filled in, the embedded URLs for files used in the signature template will be replaced by the image URL as built up by the `$imagesBaseUrl` and `$imageUrls` variables above.
 `[full_name]` | Note the square brackets, these are required. If this is present, and there are keys in the `$dataColumns` array for `forenames` and `surname`, they will be concatenated together and used for this column.
+`[template]` | Note the square brackets, these are required. If this is present, then this row in the spreadsheet will only be processed if the name of the template being processed (from the $templateList variable) matches the content of this cell - so you can have multiple templates, and one spreadsheet that feeds them all.
 
 ## Placeholders
 

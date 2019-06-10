@@ -1,8 +1,8 @@
 <?php
 	/**
 	 * E-signature builder
-	 * v1.1
-	 * (C)2018 Gareth 'GazChap' Griffiths
+	 * v1.2
+	 * (C)2018-2019 Gareth 'GazChap' Griffiths
 	 */
 
 	require dirname(__FILE__) . "/../build_config.php";
@@ -65,52 +65,60 @@
 						}
 					}
 
-					if ( !$quietMode ) echo $outputName . ": ";
 
 					foreach( $templateList as $templateName ) {
-						echo $templateName; print_r($person);
-						$outputTemplateName = replace_placeholders( $templateName, $person );
-						echo $outputTemplateName;
-						$files_src_dir = $templateFolder . $templateName . "_files";
-						$files_dest_dir = replace_placeholders( $outputFolder . $outputTemplateName . "_files", $person );
+						if ( empty( $person['[template]'] ) || $person['[template]'] == $templateName ) {
+							$outputTemplateName = replace_placeholders( $templateName, $person );
+							if ( !$quietMode ) {
+								echo "Input Template: " . $templateName . "\r\n";
+								echo "Output Template: " . $outputTemplateName . "\r\n";
+							}
+							$files_src_dir = $templateFolder . $templateName . "_files";
+							$files_dest_dir = replace_placeholders( $outputFolder . $outputTemplateName . "_files", $person );
 
-						// copy template folder
-						xcopy($files_src_dir, $files_dest_dir);
-						$filenames = array(
-							$templateFolder . $templateName . ".htm",
-							$templateFolder . $templateName . ".txt",
-							$templateFolder . $templateName . ".rtf",
-						);
+							// copy template folder
+							xcopy($files_src_dir, $files_dest_dir);
+							$filenames = array(
+								$templateFolder . $templateName . ".htm",
+								$templateFolder . $templateName . ".txt",
+								$templateFolder . $templateName . ".rtf",
+							);
 
-						foreach($filenames as $filename) {
-							$ext = strrchr( $filename, "." );
-							$output_filename = $outputFolder . $outputTemplateName . $ext;
+							foreach($filenames as $i => $filename) {
+								$ext = strrchr( $filename, "." );
+								$output_filename = $outputFolder . $outputTemplateName . $ext;
 
-							if ( file_exists( $filename ) ) {
-								$contents = file_get_contents( $filename );
-								$contents = str_replace( "\r\n", " ", $contents );
-								$contents = replace_placeholders( $contents, $person );
-
-								if ( !$embedImages && stristr( $filename, ".htm" ) ) {
-									foreach( $imageUrls as $embeddedName => $imageUrl ) {
-										$contents = str_replace('src="' . rawurlencode($templateName) . '_files/' . $embeddedName, 'src="' . $imagesBaseUrl . $imageUrl . '"', $contents);
+								if ( file_exists( $filename ) ) {
+									$contents = file_get_contents( $filename );
+									if ( $ext == ".htm" ) {
+										$contents = str_replace( "\r\n", " ", $contents );
 									}
-								} else {
-									$contents = str_replace(rawurlencode($templateName) . '_files', rawurlencode($outputTemplateName) . '_files', $contents);
-								}
+									$contents = replace_placeholders( $contents, $person );
 
-								if ($fp = fopen($output_filename, "wb")) {
-									fputs( $fp, $contents );
-									fclose( $fp );
-								}
+									if ( !$embedImages && stristr( $filename, ".htm" ) ) {
+										foreach( $imageUrls as $embeddedName => $imageUrl ) {
+											$contents = str_replace('src="' . rawurlencode($templateName) . '_files/' . $embeddedName, 'src="' . $imagesBaseUrl . $imageUrl . '"', $contents);
+										}
+									} else {
+										$contents = str_replace(rawurlencode($templateName) . '_files', rawurlencode($outputTemplateName) . '_files', $contents);
+									}
 
-								if ( !$quietMode ) echo "(" . str_replace( ".", "", $ext ) . ") ";
+									if ($fp = fopen($output_filename, "wb")) {
+										fputs( $fp, $contents );
+										fclose( $fp );
+									}
+
+									if ( !$quietMode ) {
+										if ( !$i ) echo "Output format: ";
+										echo $ext . " ";
+									}
+								}
 							}
 						}
 					}
 				}
 
-				if ( !$quietMode ) echo " OK\r\n";
+				if ( !$quietMode ) echo "[All OK!]\r\n\r\n";
 			}
 			$counter++;
 		}

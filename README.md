@@ -66,6 +66,9 @@ Basically, you're on your own...
 
 ## Changelog
 
+##### v1.2 - 2019-06-10
+* Added a [template] placeholder that can be used in the data file and the column configuration to limit that row in the data file to only be generated if the template matches
+
 ##### v1.1 - 2019-05-22
 * Tweaked the order that the build_config.php variables are defined in just to make it more logical
 * Fixed some problems with the builder itself that meant you needed to define a [full_name] column in the data.txt file rather than it just working it out

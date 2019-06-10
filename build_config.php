@@ -19,6 +19,7 @@
 	 * Special keys:
 	 * web_images: If set, will tell the builder to replace embedded image references with online equivalents based on $imagesBaseUrl and $imageUrls below.
 	 * [full_name]: note the [] surround - if this exists, it will look for 'forenames' and 'surname' and concatenate them together with a space between them
+	 * [template]: note the [] surround - if this exists, it will only generate this row if the template being dealt with is the same as is in this column
 	 */
 	$dataColumns = array(
 		'name'		=> 'NAME',
